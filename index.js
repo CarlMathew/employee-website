@@ -1,35 +1,41 @@
-import express, { json } from "express";
+import express from "express";
 import morgan from "morgan";
+
 const app = express();
 const port = 4000;
 
+// Middleware function
 function logger(req, res, next) {
   console.log(req.query);
   console.log(req.body);
-  console.log("May nagrerequest na tanga");
+
   next();
 }
 
+// Set EJS as the view engine
+app.set("view engine", "ejs");
+
+// Middleware
 app.use(express.json());
 app.use(logger);
+app.use(express.static("public"));
 
-app.use(morgan("tiny"));
-
+// Routes
 app.get("/", (req, res) => {
-  // console.log("Request Body:", req.query); // Logs the body data
   res.json({ message: "Body received" });
 });
+
 app.get("/ejs", (req, res) => {
-  res.render("index.ejs", { data: "hello" });
+  res.render("index", { data: "hello" }); // Corrected
 });
+
 app.post("/create/", (req, res) => {
-  let test = req.body; // to get the body
-  let query = req.query; // to get the params
-  // console.log(test);
-  // console.log(query);
+  let test = req.body; // Get body data
+  let query = req.query; // Get query parameters
   res.json("Successful");
 });
 
+// Start server
 app.listen(port, () => {
-  console.log(`Listening to port ${port}`);
+  console.log(`Listening on port ${port}`);
 });
